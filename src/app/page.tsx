@@ -3,12 +3,17 @@ import Image from "next/image";
 import StarIcon from "@mui/icons-material/Star";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, FreeMode } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/free-mode";
 import {
   Box,
   Link,
   Avatar,
   Typography,
-  OutlinedInput,
   Button,
   Grid,
   createTheme,
@@ -16,12 +21,21 @@ import {
   Card,
   Rating,
   TextField,
+  Tabs,
+  Tab,
 } from "@mui/material";
-import { usePathname } from "next/navigation";
+import { FaTiktok } from "react-icons/fa";
+import { BiLogoFacebook } from "react-icons/bi";
 import { BsSearch } from "react-icons/bs";
-import { relative } from "path";
-import { ArrowBackIosNew } from "@mui/icons-material";
-import { red } from "@mui/material/colors";
+import {
+  ArrowBackIosNew,
+  ArrowForward,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+  SupportAgent,
+  TagFaces,
+} from "@mui/icons-material";
+import React from "react";
 const theme = createTheme({
   palette: {
     primary: {
@@ -41,6 +55,7 @@ const theme = createTheme({
     },
     background: {
       paper: "#FFF5E9",
+      default: "#16AD5B",
     },
   },
 });
@@ -136,6 +151,22 @@ const booksHistory = [
     category: "Sách giáo khoa",
     fee: true,
   },
+  {
+    name: "Lịch sử lớp 11",
+    image: "/images/Rectangle 5160.png",
+    rate: 4,
+    view: "98",
+    category: "Sách giáo khoa",
+    fee: true,
+  },
+  {
+    name: "Toán lớp 2",
+    image: "/images/Rectangle 5157.png",
+    rate: 4,
+    view: "29",
+    category: "Sách giáo khoa",
+    fee: true,
+  },
 ];
 
 const booksRead = [
@@ -154,6 +185,22 @@ const booksRead = [
     view: "669",
     category: "Sách giáo khoa",
     fee: false,
+  },
+  {
+    name: "Toán lớp 11",
+    image: "/images/Rectangle 5156.png",
+    rate: 5,
+    view: "601",
+    category: "Sách giáo khoa",
+    fee: true,
+  },
+  {
+    name: "Hoạt động trải nghiệm 1",
+    image: "/images/Rectangle 5157.png",
+    rate: 4,
+    view: "369",
+    category: "Sách giáo khoa",
+    fee: true,
   },
   {
     name: "Toán lớp 11",
@@ -202,8 +249,61 @@ const news = [
   },
 ];
 
+//Settings slick slider
+const settings = {
+  infinite: false,
+  speed: 500,
+  slidesToShow: 4,
+  autoplay: false,
+  slidesToScroll: 1,
+  arrows: true,
+  initialSlide: 0,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+      },
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 2,
+      },
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+      },
+    },
+  ],
+};
+
 export default function Home() {
-  const pathName = usePathname();
+  const [value, setValue] = React.useState(0);
+  const [backToTop, setBackToTop] = React.useState(false);
+
+  React.useEffect(() => {
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 100) {
+        setBackToTop(true);
+      } else {
+        setBackToTop(false);
+      }
+    });
+  });
+
+  const scrollUp = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -218,34 +318,45 @@ export default function Home() {
       >
         <Box display={"flex"} gap={8} alignItems={"center"}>
           <Image src={"./images/Logo.svg"} alt="Logo" width={64} height={64} />
-          <Box
-            display={"flex"}
-            gap={6}
-            alignItems={"center"}
-            justifyContent={"center"}
-            height={"100%"}
+          <Tabs
+            variant="fullWidth"
+            scrollButtons
+            allowScrollButtonsMobile
+            value={value}
+            onChange={handleChange}
+            textColor="inherit"
+            sx={{
+              ".MuiTabs-indicator": {
+                width: "5% !important",
+                marginLeft: "10%",
+                borderRadius: "10px",
+                bgcolor: theme.palette.background.default,
+              },
+
+              "& .MuiTab-root.Mui-selected": {
+                fontWeight: 700,
+              },
+              " .MuiTab-root": {
+                color: theme.palette.text.secondary,
+                fontWeight: 400,
+              },
+            }}
           >
             {navbars.map((navbar, index) => (
-              <Link
+              <Tab
+                label={navbar.name}
+                // href={navbar.link}
+                // color={theme.palette.text.secondary}
                 key={index}
-                href={navbar.link}
-                underline={"none"}
-                alignItems={"center"}
-                justifyContent={"center"}
-                display={"flex"}
-                height={"100%"}
-                fontSize={16}
-                color={theme.palette.text.secondary}
-                sx={
-                  pathName === navbar.link
-                    ? { borderBottom: "5px solid", fontWeight: 700 }
-                    : null
-                }
-              >
-                {navbar.name}
-              </Link>
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  whiteSpace: "nowrap",
+                  color: theme.palette.text.secondary,
+                }}
+              />
             ))}
-          </Box>
+          </Tabs>
         </Box>
         <Box display={"flex"} gap={2}>
           <TextField
@@ -268,7 +379,7 @@ export default function Home() {
                 xl: "550px",
               },
               "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: theme.palette.text.secondary,
+                // borderColor: "#333",
               },
             }}
             size="small"
@@ -474,6 +585,7 @@ export default function Home() {
               display={"flex"}
               flexDirection={"column"}
               width={"85%"}
+              maxWidth={"85%"}
               mx={"auto"}
             >
               <Box
@@ -549,103 +661,131 @@ export default function Home() {
                     Xem ngay <ArrowForwardIosIcon fontSize="small" />
                   </Button>
                 </Box>
-                <Grid container sx={{ position: "relative" }}>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      bgcolor: "#fff",
-                      position: "absolute",
-                      top: "25%",
-                      left: 0,
-                      zIndex: 1,
-                      border: "0.932px solid var(--button-boder, #DBDBDB)",
-                      borderRadius: "100px",
-                      color: "#333",
-                      "&:hover": {
-                        bgcolor: "#fff",
-                      },
-                    }}
-                  >
-                    <ArrowBackIosNew width={"100%"} sx={{ m: 0, p: 0 }} />
-                  </Button>
+                <Swiper
+                  style={{ position: "relative" }}
+                  slidesPerView={4}
+                  modules={[Navigation, FreeMode]}
+                  navigation={{
+                    prevEl: ".prevButtonClass",
+                    nextEl: ".nextButtonClass",
+                  }}
+                  scrollbar={{ draggable: true }}
+                >
                   {booksRead.map((book, index) => (
-                    <Grid
-                      key={index}
-                      item
-                      xs={12}
-                      md={6}
-                      lg={3}
-                      mb={5}
-                      p={2}
-                      sx={{ position: "relative" }}
-                      display={"flex"}
-                      flexDirection={"column"}
-                      justifyContent={"space-between"}
-                      height={"85%"}
-                    >
-                      <Image
-                        src={book.image}
-                        alt={book.name}
-                        width={240}
-                        height={340}
-                        layout="responsive"
-                      />
+                    <SwiperSlide key={index}>
                       <Box
+                        p={2}
+                        sx={{ position: "relative", width: "auto !important" }}
                         display={"flex"}
                         flexDirection={"column"}
-                        gap={2}
-                        mt={2}
+                        justifyContent={"space-between"}
+                        height={"80%"}
                       >
-                        <Box display={"flex"} flexDirection={"column"}>
-                          <Typography fontWeight={400}>{book.name}</Typography>
-                          <Typography fontSize={12} color={"#999999"}>
-                            {book.name} - {book.category}
-                          </Typography>
-                        </Box>
+                        <Image
+                          src={book.image}
+                          alt={book.name}
+                          width={240}
+                          height={340}
+                          layout="responsive"
+                        />
                         <Box
                           display={"flex"}
-                          justifyContent={"space-between"}
-                          flexWrap={{ sm: "wrap", xl: "nowrap" }}
+                          flexDirection={"column"}
+                          gap={2}
+                          mt={2}
                         >
-                          <Box display={"flex"}>
-                            <Rating
-                              name="read-only"
-                              value={book.rate}
-                              readOnly
-                              size="small"
-                              emptyIcon={
-                                <StarIcon
-                                  style={{ opacity: 0.55 }}
-                                  fontSize="small"
-                                />
-                              }
-                            />
+                          <Box display={"flex"} flexDirection={"column"}>
+                            <Typography fontWeight={400}>
+                              {book.name}
+                            </Typography>
+                            <Typography fontSize={12} color={"#999999"}>
+                              {book.name} - {book.category}
+                            </Typography>
                           </Box>
-                          <Typography
-                            fontSize={14}
-                            textAlign={"right"}
-                            whiteSpace={{ xl: "nowrap" }}
+                          <Box
+                            display={"flex"}
+                            justifyContent={"space-between"}
+                            flexWrap={{ sm: "wrap", xl: "nowrap" }}
                           >
-                            {book.view} lượt xem
-                          </Typography>
+                            <Box display={"flex"}>
+                              <Rating
+                                name="read-only"
+                                value={book.rate}
+                                readOnly
+                                size="small"
+                                emptyIcon={
+                                  <StarIcon
+                                    style={{ opacity: 0.55 }}
+                                    fontSize="small"
+                                  />
+                                }
+                              />
+                            </Box>
+                            <Typography
+                              fontSize={14}
+                              textAlign={"right"}
+                              whiteSpace={{ xl: "nowrap" }}
+                            >
+                              {book.view} lượt xem
+                            </Typography>
+                          </Box>
                         </Box>
+                        {book.fee && (
+                          <Image
+                            src="./images/Group 57676.svg"
+                            alt="Tinh Phi"
+                            width={32}
+                            height={32}
+                            style={{
+                              position: "absolute",
+                              top: "5%",
+                              right: "15%",
+                            }}
+                          />
+                        )}
                       </Box>
-                      {book.fee && (
-                        <Image
-                          src="./images/Group 57676.svg"
-                          alt="Tinh Phi"
-                          width={32}
-                          height={32}
-                          style={{
-                            position: "absolute",
-                            top: "5%",
-                            right: "15%",
-                          }}
-                        />
-                      )}
-                    </Grid>
+                    </SwiperSlide>
                   ))}
-                </Grid>
+
+                  <Button
+                    className="prevButtonClass"
+                    sx={{
+                      position: "absolute",
+                      left: "-1%",
+                      top: "30%",
+                      zIndex: 1,
+                    }}
+                  >
+                    <ArrowBackIosNew
+                      sx={{
+                        borderRadius: "50%",
+                        border: "1px solid #DBDBDB",
+                        p: 1,
+                        bgcolor: "#fff",
+                        color: "#000",
+                      }}
+                    />
+                  </Button>
+                  <Button
+                    className="nextButtonClass"
+                    sx={{
+                      position: "absolute",
+                      right: "-1%",
+                      top: "30%",
+                      zIndex: 1,
+                    }}
+                  >
+                    <ArrowForwardIosIcon
+                      sx={{
+                        borderRadius: "50%",
+                        border: "1px solid #DBDBDB",
+                        p: 1,
+                        bgcolor: "#fff",
+                        color: "#000",
+                      }}
+                    />
+                  </Button>
+                </Swiper>
               </Box>
             </Box>
             <Box
@@ -727,83 +867,131 @@ export default function Home() {
                     Xem ngay <ArrowForwardIosIcon fontSize="small" />
                   </Button>
                 </Box>
-                <Grid container>
+                <Swiper
+                  style={{ position: "relative" }}
+                  slidesPerView={4}
+                  modules={[Navigation, FreeMode]}
+                  navigation={{
+                    prevEl: ".prevButtonClass",
+                    nextEl: ".nextButtonClass",
+                  }}
+                  scrollbar={{ draggable: true }}
+                >
                   {booksHistory.map((book, index) => (
-                    <Grid
-                      key={index}
-                      item
-                      xs={12}
-                      md={6}
-                      lg={3}
-                      mb={5}
-                      p={2}
-                      sx={{ position: "relative" }}
-                      display={"flex"}
-                      flexDirection={"column"}
-                      justifyContent={"space-between"}
-                      height={"85%"}
-                    >
-                      <Image
-                        src={book.image}
-                        alt={book.name}
-                        width={240}
-                        height={340}
-                        layout="responsive"
-                      />
+                    <SwiperSlide key={index}>
                       <Box
+                        p={2}
+                        sx={{ position: "relative", width: "auto !important" }}
                         display={"flex"}
                         flexDirection={"column"}
-                        gap={2}
-                        mt={2}
-                        flex={1}
-                        justifyContent={"flex-end"}
+                        justifyContent={"space-between"}
+                        height={"80%"}
                       >
-                        <Box display={"flex"} flexDirection={"column"}>
-                          <Typography fontWeight={400}>{book.name}</Typography>
-                          <Typography fontSize={12} color={"#999999"}>
-                            {book.name} - {book.category}
-                          </Typography>
-                        </Box>
+                        <Image
+                          src={book.image}
+                          alt={book.name}
+                          width={240}
+                          height={340}
+                          layout="responsive"
+                        />
                         <Box
                           display={"flex"}
-                          justifyContent={"space-between"}
-                          flexWrap={{ sm: "wrap", xl: "nowrap" }}
+                          flexDirection={"column"}
+                          gap={2}
+                          mt={2}
                         >
-                          <Box display={"flex"}>
-                            <Rating
-                              name="read-only"
-                              value={book.rate}
-                              readOnly
-                              size="small"
-                              emptyIcon={
-                                <StarIcon
-                                  style={{ opacity: 0.55 }}
-                                  fontSize="small"
-                                />
-                              }
-                            />
+                          <Box display={"flex"} flexDirection={"column"}>
+                            <Typography fontWeight={400}>
+                              {book.name}
+                            </Typography>
+                            <Typography fontSize={12} color={"#999999"}>
+                              {book.name} - {book.category}
+                            </Typography>
                           </Box>
-                          <Typography fontSize={14} textAlign={"right"}>
-                            {book.view} lượt xem
-                          </Typography>
+                          <Box
+                            display={"flex"}
+                            justifyContent={"space-between"}
+                            flexWrap={{ sm: "wrap", xl: "nowrap" }}
+                          >
+                            <Box display={"flex"}>
+                              <Rating
+                                name="read-only"
+                                value={book.rate}
+                                readOnly
+                                size="small"
+                                emptyIcon={
+                                  <StarIcon
+                                    style={{ opacity: 0.55 }}
+                                    fontSize="small"
+                                  />
+                                }
+                              />
+                            </Box>
+                            <Typography
+                              fontSize={14}
+                              textAlign={"right"}
+                              whiteSpace={{ xl: "nowrap" }}
+                            >
+                              {book.view} lượt xem
+                            </Typography>
+                          </Box>
                         </Box>
+                        {book.fee && (
+                          <Image
+                            src="./images/Group 57676.svg"
+                            alt="Tinh Phi"
+                            width={32}
+                            height={32}
+                            style={{
+                              position: "absolute",
+                              top: "5%",
+                              right: "15%",
+                            }}
+                          />
+                        )}
                       </Box>
-                      {book.fee && (
-                        <Image
-                          src="./images/Group 57676.svg"
-                          alt="Tinh Phi"
-                          width={32}
-                          height={32}
-                          style={{
-                            position: "absolute",
-                            top: "5%",
-                            right: "15%",
-                          }}
-                        />
-                      )}
-                    </Grid>
+                    </SwiperSlide>
                   ))}
-                </Grid>
+
+                  <Button
+                    className="prevButtonClass"
+                    sx={{
+                      position: "absolute",
+                      left: "-1%",
+                      top: "30%",
+                      zIndex: 1,
+                    }}
+                  >
+                    <ArrowBackIosNew
+                      sx={{
+                        borderRadius: "50%",
+                        border: "1px solid #DBDBDB",
+                        p: 1,
+                        bgcolor: "#fff",
+                        color: "#000",
+                      }}
+                    />
+                  </Button>
+                  <Button
+                    className="nextButtonClass"
+                    sx={{
+                      position: "absolute",
+                      right: "-1%",
+                      top: "30%",
+                      zIndex: 1,
+                    }}
+                  >
+                    <ArrowForwardIosIcon
+                      sx={{
+                        borderRadius: "50%",
+                        border: "1px solid #DBDBDB",
+                        p: 1,
+                        bgcolor: "#fff",
+                        color: "#000",
+                      }}
+                    />
+                  </Button>
+                </Swiper>
               </Box>
             </Box>
           </Box>
@@ -1252,6 +1440,296 @@ export default function Home() {
               ))}
             </Grid>
           </Box>
+        </Box>
+        <Box sx={{ bgcolor: theme.palette.text.secondary }}>
+          <Box
+            width={"85%"}
+            mx={"auto"}
+            display={"flex"}
+            justifyContent={"space-between"}
+            pb={4}
+          >
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"start"}
+              gap={3}
+              mt={8}
+            >
+              <Image
+                src={"./images/Logo.svg"}
+                alt="Logo"
+                width={64}
+                height={64}
+              />
+              <Box
+                display={"flex"}
+                flexDirection={"column"}
+                justifyContent={"space-between"}
+              >
+                <Box
+                  display={"inline-flex"}
+                  color={theme.palette.secondary.light}
+                  fontWeight={400}
+                  alignItems={"center"}
+                >
+                  Hỗ trợ kỹ thuật:
+                  <Typography
+                    color={theme.palette.background.default}
+                    fontSize={20}
+                    fontWeight={700}
+                    ml={1}
+                  >
+                    0888 999 999
+                  </Typography>
+                </Box>
+                <Box
+                  display={"inline-flex"}
+                  color={theme.palette.secondary.light}
+                  fontWeight={400}
+                  alignItems={"center"}
+                >
+                  Góp ý khiếu nại:
+                  <Typography
+                    color={theme.palette.background.default}
+                    fontSize={20}
+                    fontWeight={700}
+                    ml={1}
+                  >
+                    0888 666 999
+                  </Typography>
+                </Box>
+                <Box
+                  display={"inline-flex"}
+                  color={theme.palette.secondary.light}
+                  fontWeight={400}
+                  alignItems={"center"}
+                >
+                  Email:
+                  <Typography
+                    color={theme.palette.background.default}
+                    fontSize={20}
+                    fontWeight={700}
+                    ml={1}
+                  >
+                    hotro@quangich.com
+                  </Typography>
+                </Box>
+                <Image
+                  src={"/images/image 14.png"}
+                  alt="confirm"
+                  width={130}
+                  height={52}
+                  style={{ marginTop: 35 }}
+                />
+              </Box>
+            </Box>
+            <Box
+              mt={10}
+              gap={3}
+              display={"flex"}
+              flexDirection={"column"}
+              color={theme.palette.secondary.light}
+            >
+              <Typography fontWeight={700}>Tài liệu</Typography>
+              <Typography fontWeight={400}>5 phẩm chất</Typography>
+              <Typography fontWeight={400}>10 năng lực</Typography>
+              <Typography fontWeight={400}>Sách theo lớp học</Typography>
+              <Typography fontWeight={400}>Sách giáo khoa</Typography>
+              <Typography fontWeight={400}>Sách tham khảo</Typography>
+            </Box>
+            <Box
+              mt={10}
+              gap={3}
+              display={"flex"}
+              flexDirection={"column"}
+              color={theme.palette.secondary.light}
+            >
+              <Typography fontWeight={700}>Điều khoản sử dụng</Typography>
+              <Typography fontWeight={400}>Chính sách bảo mật</Typography>
+              <Typography fontWeight={400}>Điều khoản khi mượn sách</Typography>
+              <Typography fontWeight={400}>Điều khoản đổi sách</Typography>
+              <Typography fontWeight={400}>Khách hàng thân quen</Typography>
+              <Typography fontWeight={400}>Chương trình Affiliate</Typography>
+            </Box>
+            <Box
+              mt={10}
+              gap={3}
+              display={"flex"}
+              flexDirection={"column"}
+              color={theme.palette.secondary.light}
+            >
+              <Typography fontWeight={700}>Hỗ trợ</Typography>
+              <Typography fontWeight={400}>Giới thiệu</Typography>
+              <Typography fontWeight={400}>Câu hỏi thường gặp</Typography>
+              <Typography fontWeight={400}>Hướng dẫn sử dụng</Typography>
+            </Box>
+
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              gap={4}
+              maxWidth={410}
+              mt={10}
+            >
+              <Typography
+                fontSize={14}
+                color={"white"}
+                fontWeight={400}
+                lineHeight={"150%"}
+              >
+                “Thế giới vô cùng vĩ đại. Cặp mắt của bạn chỉ thấy được một phần
+                nhỏ bé không đáng kể. Bởi vậy bạn hãy tìm lấy các sự kiện ở
+                trong sách. Hãy tích lũy đều đặn hàng ngày các sự kiện ấy”.
+                (V.Ôbrưsép)
+              </Typography>
+              <Box display={"flex"} flexDirection={"column"} gap={1}>
+                <Typography
+                  fontSize={20}
+                  fontWeight={700}
+                  color={theme.palette.secondary.light}
+                >
+                  eNetViet - kết nối gia đình nhà trường
+                </Typography>
+                <Button
+                  variant="contained"
+                  sx={{
+                    bgcolor: "white",
+                    color: "black",
+                    fontSize: "14px",
+                    textTransform: "none",
+                    borderRadius: 60,
+                  }}
+                >
+                  Tải xuống eNetViet{" "}
+                  <ArrowForward fontSize="small" style={{ marginLeft: 10 }} />
+                </Button>
+              </Box>
+              <Box
+                display={"flex"}
+                flexDirection={"column"}
+                gap={3}
+                color={theme.palette.secondary.light}
+              >
+                <Typography
+                  fontSize={14}
+                  fontWeight={700}
+                  sx={{ textTransform: "uppercase" }}
+                >
+                  KẾT NỐI VỚI QUẢNG ÍCH
+                </Typography>
+                <Box display={"flex"} gap={2}>
+                  <Image
+                    src={"./images/Icon Facebook.svg"}
+                    alt="icon Facebook"
+                    width={40}
+                    height={40}
+                  />
+                  <Image
+                    src={"./images/Icon Tiktok.svg"}
+                    alt="icon Tiktok"
+                    width={40}
+                    height={40}
+                  />
+                  <Image
+                    src={"./images/Icon Zalo.svg"}
+                    alt="icon Zalo"
+                    width={40}
+                    height={40}
+                  />
+                  <Image
+                    src={"./images/Icon Youtube.svg"}
+                    alt="icon Youtube"
+                    width={40}
+                    height={40}
+                  />
+                  <Image
+                    src={"./images/Icon Instagram.svg"}
+                    alt="icon Instagram"
+                    width={40}
+                    height={40}
+                  />
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+          <Box
+            borderTop={"1px solid #C6C6C6"}
+            py={3}
+            display={"flex"}
+            justifyContent={"space-between"}
+            width={"85%"}
+            mx={"auto"}
+          >
+            <Typography color={"#DBDBDB"} fontWeight={400}>
+              Copyright © 2023 Quảng Ích. All rights reserved.
+            </Typography>
+            <Box display={"flex"} gap={1} color={"white"}>
+              <Image
+                src={"./images/Group 71.svg"}
+                alt="icon"
+                width={20}
+                height={20}
+              />
+              <Typography>Việt Name</Typography>
+              <KeyboardArrowDown />
+            </Box>
+          </Box>
+        </Box>
+        <Box
+          display={"flex"}
+          gap={1}
+          flexDirection={"column"}
+          sx={{ position: "fixed", bottom: "2%", right: "1%" }}
+        >
+          {backToTop && (
+            <Button
+              onClick={scrollUp}
+              sx={{
+                p: 0,
+                color: theme.palette.text.secondary,
+              }}
+            >
+              <KeyboardArrowUp
+                sx={{
+                  bgcolor: theme.palette.secondary.light,
+                  borderRadius: 2,
+                  border: "1px solid #DBDBDB",
+                  p: 1,
+                }}
+              />
+            </Button>
+          )}
+          <Button
+            sx={{
+              p: 0,
+              color: theme.palette.text.secondary,
+            }}
+          >
+            <SupportAgent
+              sx={{
+                bgcolor: theme.palette.secondary.light,
+                borderRadius: 2,
+                border: "1px solid #DBDBDB",
+                p: 1,
+              }}
+            />
+          </Button>
+          <Button
+            sx={{
+              p: 0,
+              color: theme.palette.text.secondary,
+            }}
+          >
+            <TagFaces
+              sx={{
+                bgcolor: theme.palette.secondary.light,
+                borderRadius: 2,
+                border: "1px solid #DBDBDB",
+                p: 1,
+              }}
+            />
+          </Button>
         </Box>
       </Box>
     </ThemeProvider>
