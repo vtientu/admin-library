@@ -5,7 +5,14 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, FreeMode } from "swiper/modules";
-
+import {
+  BookIcon,
+  ELearningIcon,
+  IpadIcon,
+  LibraryIcon,
+  TalkBookIcon,
+  VideoIcon,
+} from "../../public/icons";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/free-mode";
@@ -84,37 +91,43 @@ const categories = [
     name: "Sách điện tử",
     link: "/e-books",
     color: "rgba(255, 114, 127, 0.10)",
-    icon: "./images/ipad 1.svg",
+    colorText: "#EC2045",
+    icon: <IpadIcon />,
   },
   {
     name: "Sách giấy",
     link: "/books",
     color: "#EAF7ED",
-    icon: "./images/book 1.svg",
+    colorText: "#16AD5B",
+    icon: <BookIcon />,
   },
   {
     name: "Sách nói",
     link: "/audiobooks",
     color: "#FFF9E9",
-    icon: "./images/Sách nói.svg",
+    colorText: "#F7931A",
+    icon: <TalkBookIcon />,
   },
   {
     name: "Bài giảng điện tử",
     link: "/lectures",
     color: "#EDF1F8",
-    icon: "./images/e-learning-monitor 1.svg",
+    colorText: "#2B4DEF",
+    icon: <ELearningIcon />,
   },
   {
     name: "Video",
     link: "/videos",
     color: "#F5EDFF",
-    icon: "./images/Video, ảnh.svg",
+    colorText: "#9747FF",
+    icon: <VideoIcon />,
   },
   {
     name: "Album ảnh",
     link: "/albums",
     color: "rgba(255, 114, 127, 0.10)",
-    icon: "./images/Library 1.svg",
+    colorText: "#D24F5B",
+    icon: <LibraryIcon />,
   },
 ];
 
@@ -556,16 +569,10 @@ export default function Home() {
                     display: "flex",
                     justifyItems: "center",
                     alignItems: "center",
+                    color: category.colorText,
                   }}
                 >
-                  <Image
-                    layout="responsive"
-                    src={category.icon}
-                    alt="Book"
-                    width={40}
-                    height={40}
-                    style={{ backgroundColor: category.color }}
-                  />
+                  {category.icon}
                 </Avatar>
                 <Typography
                   fontWeight={400}
@@ -1062,13 +1069,7 @@ export default function Home() {
                       },
                     }}
                   >
-                    <Image
-                      src={category.icon}
-                      alt="Book"
-                      width={25}
-                      height={25}
-                      color="#fff"
-                    />
+                    {category.icon}
                     <Typography
                       fontWeight={400}
                       fontSize={16}
